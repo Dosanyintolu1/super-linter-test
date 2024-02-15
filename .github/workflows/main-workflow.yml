@@ -1,0 +1,32 @@
+name: Linter
+
+on:
+  push:
+    branches:
+      - test-super-linter
+
+jobs:
+  super-linter:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write # Needed to output status of lint
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Lint SOAP Spec files
+      uses: super-linter/super-linter@v6.1.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        DISABLE_ERRORS: false
+        VALIDATE_XML: true
+        DEFAULT_BRANCH: test-super-linter
+        LOG_LEVEL: VERBOSE
+        VALIDATE_ALL_CODEBASE: false
+        FILTER_REGEX_INCLUDE: .*wsdl/ebRS/.*.xsd
